@@ -1,0 +1,41 @@
+networks:
+  ixlas:
+    driver: bridge
+
+services:
+  backend:
+    build: 
+      context: ./backend/
+      dockerfile: Dockerfile
+    environment:
+      - DB_SOURCE=postgresql://root:kurero17@postgres:5432/simple_bank?sslmode=disable
+    ports:  
+      - "8080:8080"
+    networks: 
+      - "ixlas"
+    expose:
+      - "8080"
+    depends_on:
+      - "ixlas-postgres"
+    entrypoint:
+      [
+        "/app/wait-for.sh",
+        "postgres:5432",
+        "--",
+        "/app/start.sh"
+      ]
+    command: [ "/app/main" ]
+
+  ixlas-postgres:
+    image: postgres:16-alpine
+    container_name: ixlas-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: ixlas
+    ports:
+      - "5432:5432"
+    networks:
+      - "ixlas"
+    expose:
+      - "5432"

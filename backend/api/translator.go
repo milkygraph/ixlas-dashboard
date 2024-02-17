@@ -18,13 +18,13 @@ func (s *Server) getTranslators(c *gin.Context) {
 
 func (s *Server) getTranslator(c *gin.Context) {
 	idParam := c.Param("id")
-	id, err := strconv.Atoi(idParam)
+	id, err := strconv.ParseInt(idParam, 10, 64)
 	if err != nil {
 		c.JSON(400, gin.H{"error": "id must be a valid number"})
 		return
 	}
 
-	translator, err := s.query.GetTranslator(c, int64(id))
+	translator, err := s.query.GetTranslator(c, id)
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
@@ -63,13 +63,13 @@ func (s *Server) createTranslator(c *gin.Context) {
 
 func (s *Server) deleteTranslator(c *gin.Context) {
 	idParam := c.Param("id")
-	id, err := strconv.Atoi(idParam)
+	id, err := strconv.ParseInt(idParam, 10, 64)
 	if err != nil {
 		c.JSON(400, gin.H{"error": "id must be a valid number"})
 		return
 	}
 
-	err = s.query.DeleteTranslator(c, int64(id))
+	err = s.query.DeleteTranslator(c, id)
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return

@@ -17,7 +17,7 @@ func (s *Server) getNotaries(c *gin.Context) {
 
 func (s *Server) getNotary(c *gin.Context) {
 	idParam := c.Param("id")
-	id, err := strconv.Atoi(idParam)
+	id, err := strconv.ParseInt(idParam, 10, 64)
 	if err != nil {
 		c.JSON(400, gin.H{"error": "id must be a valid number"})
 		return
@@ -51,7 +51,7 @@ func (s *Server) createNotary(c *gin.Context) {
 
 func (s *Server) deleteNotary(c *gin.Context) {
 	idParam := c.Param("id")
-	id, err := strconv.Atoi(idParam)
+	id, err := strconv.ParseInt(idParam, 10, 64)
 	if err != nil {
 		c.JSON(400, gin.H{"error": "id must be a number"})
 		return

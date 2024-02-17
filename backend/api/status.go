@@ -26,7 +26,7 @@ func (s *Server) createStatus(c *gin.Context) {
 
 func (s *Server) getStatus(c *gin.Context) {
 	idParam := c.Param("id")
-	id, err := strconv.Atoi(idParam)
+	id, err := strconv.ParseInt(idParam, 10, 64)
 	if err != nil {
 		c.JSON(400, gin.H{"error": "id must be a number"})
 		return

@@ -128,7 +128,7 @@ func (q *Queries) GetOrder(ctx context.Context, orderID int64) (Order, error) {
 }
 
 const getOrders = `-- name: GetOrders :many
-SELECT order_id, issued_date, name, surname, phone_number, language_from, language_to, number_of_pages, notary_id, total_payment, down_payment, remaining, translator_id, expenses, status_id, details FROM "order" ORDER BY order_id LIMIT $1 OFFSET $2
+SELECT order_id, issued_date, name, surname, phone_number, language_from, language_to, number_of_pages, notary_id, total_payment, down_payment, remaining, translator_id, expenses, status_id, details FROM "order" ORDER BY order_id DESC LIMIT $1 OFFSET $2
 `
 
 type GetOrdersParams struct {
@@ -178,46 +178,43 @@ func (q *Queries) GetOrders(ctx context.Context, arg GetOrdersParams) ([]Order, 
 
 const updateOrder = `-- name: UpdateOrder :one
 UPDATE "order" SET
-    issued_date = $1,
-    name = $2,
-    surname = $3,
-    phone_number = $4,
-    language_from = $5,
-    language_to = $6,
-    number_of_pages = $7,
-    notary_id = $8,
-    total_payment = $9,
-    down_payment = $10,
-    remaining = $11,
-    translator_id = $12,
-    expenses = $13,
-    status_id = $14,
-    details = $15
-WHERE order_id = $16 RETURNING order_id, issued_date, name, surname, phone_number, language_from, language_to, number_of_pages, notary_id, total_payment, down_payment, remaining, translator_id, expenses, status_id, details
+    name = $1,
+    surname = $2,
+    phone_number = $3,
+    language_from = $4,
+    language_to = $5,
+    number_of_pages = $6,
+    notary_id = $7,
+    total_payment = $8,
+    down_payment = $9,
+    remaining = $10,
+    translator_id = $11,
+    expenses = $12,
+    status_id = $13,
+    details = $14
+WHERE order_id = $15 RETURNING order_id, issued_date, name, surname, phone_number, language_from, language_to, number_of_pages, notary_id, total_payment, down_payment, remaining, translator_id, expenses, status_id, details
 `
 
 type UpdateOrderParams struct {
-	IssuedDate    time.Time `json:"issued_date"`
-	Name          string    `json:"name"`
-	Surname       string    `json:"surname"`
-	PhoneNumber   string    `json:"phone_number"`
-	LanguageFrom  string    `json:"language_from"`
-	LanguageTo    string    `json:"language_to"`
-	NumberOfPages int32     `json:"number_of_pages"`
-	NotaryID      int32     `json:"notary_id"`
-	TotalPayment  string    `json:"total_payment"`
-	DownPayment   string    `json:"down_payment"`
-	Remaining     string    `json:"remaining"`
-	TranslatorID  int32     `json:"translator_id"`
-	Expenses      string    `json:"expenses"`
-	StatusID      int32     `json:"status_id"`
-	Details       string    `json:"details"`
-	OrderID       int64     `json:"order_id"`
+	Name          string `json:"name"`
+	Surname       string `json:"surname"`
+	PhoneNumber   string `json:"phone_number"`
+	LanguageFrom  string `json:"language_from"`
+	LanguageTo    string `json:"language_to"`
+	NumberOfPages int32  `json:"number_of_pages"`
+	NotaryID      int32  `json:"notary_id"`
+	TotalPayment  string `json:"total_payment"`
+	DownPayment   string `json:"down_payment"`
+	Remaining     string `json:"remaining"`
+	TranslatorID  int32  `json:"translator_id"`
+	Expenses      string `json:"expenses"`
+	StatusID      int32  `json:"status_id"`
+	Details       string `json:"details"`
+	OrderID       int64  `json:"order_id"`
 }
 
 func (q *Queries) UpdateOrder(ctx context.Context, arg UpdateOrderParams) (Order, error) {
 	row := q.db.QueryRowContext(ctx, updateOrder,
-		arg.IssuedDate,
 		arg.Name,
 		arg.Surname,
 		arg.PhoneNumber,

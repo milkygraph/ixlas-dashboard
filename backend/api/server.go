@@ -27,6 +27,21 @@ func (s *Server) setupRouter() {
 	gin.SetMode(gin.DebugMode)
 	router := gin.Default()
 
+	// Enable CORS
+	router.Use(func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	})
+
 	router.GET("/translator", s.getTranslators)
 	router.GET("/translator/:id", s.getTranslator)
 	router.POST("/translator", s.createTranslator)
@@ -43,6 +58,7 @@ func (s *Server) setupRouter() {
 
 	router.GET("/order", s.getOrders)
 	router.GET("/order/:id", s.getOrder)
+	router.PUT("/order/:id", s.updateOrder)
 	router.POST("/order", s.createOrder)
 	router.DELETE("/order/:id", s.deleteOrder)
 
