@@ -42,7 +42,7 @@ func (s *Server) setupRouter() {
 		c.Next()
 	})
 
-	router.GET("/translator", s.getTranslators)
+	router.GET("/translators", s.getTranslators)
 	router.GET("/translator/:id", s.getTranslator)
 	router.POST("/translator", s.createTranslator)
 	router.DELETE("/translator/:id", s.deleteTranslator)
@@ -61,6 +61,8 @@ func (s *Server) setupRouter() {
 	router.PUT("/order/:id", s.updateOrder)
 	router.POST("/order", s.createOrder)
 	router.DELETE("/order/:id", s.deleteOrder)
+
+	router.GET("/languages", s.getLanguages)
 
 	s.router = router
 }

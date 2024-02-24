@@ -1,5 +1,4 @@
 import * as React from 'react';
-import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -7,43 +6,57 @@ import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import MuiButton from '@mui/material/Button';
 import { Link } from 'react-router-dom';
+import styled from '@mui/system/styled';
+
+
+const Button = styled(MuiButton, { shouldForwardProp: (prop) => prop !== 'open' })(() => ({
+    width: '80%',
+    borderRadius: 10,
+    shadow: 3,
+    "& .MuiListItemText-root": {
+        textAlign: 'left',
+    }
+}));
 
 export const mainListItems = (
     <React.Fragment>
-        <ListItemButton
+        <Button
             component={Link}
-            to="/">
+            to="/"
+        >
             <ListItemIcon>
                 <DashboardIcon />
             </ListItemIcon>
             <ListItemText primary="Dashboard"/>
-        </ListItemButton>
-        <ListItemButton
+        </Button>
+        <Button
             component={Link}
-            to="/translators">
+            to="/translators"
+        >
             <ListItemIcon>
                 <PeopleAltIcon />
             </ListItemIcon>
             <ListItemText primary="Translators"/>
-        </ListItemButton>
-        <ListItemButton>
+        </Button>
+        <Button>
             <ListItemIcon>
                 <PeopleIcon />
             </ListItemIcon>
             <ListItemText primary="Customers" />
-        </ListItemButton>
-        <ListItemButton>
+        </Button>
+        <Button>
             <ListItemIcon>
                 <BarChartIcon />
             </ListItemIcon>
             <ListItemText primary="Reports" />
-        </ListItemButton>
-        <ListItemButton>
+        </Button>
+        <Button>
             <ListItemIcon>
                 <LayersIcon />
             </ListItemIcon>
             <ListItemText primary="Integrations" />
-        </ListItemButton>
+        </Button>
     </React.Fragment>
 );

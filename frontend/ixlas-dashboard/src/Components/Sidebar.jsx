@@ -1,12 +1,17 @@
 import './Sidebar.css';
-import { Drawer, Toolbar, IconButton, Divider, List } from '@mui/material';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import React from 'react';
+import { Typography, Toolbar, Divider, List } from '@mui/material';
+import Drawer from './Drawer';
 import { mainListItems } from './ListItems';
 
 
-export default function Sidebar({open, toggleDrawer}) {
+export default function Sidebar() {
     return (
-        <Drawer variant="permanent" open={open}>
+        <Drawer variant="permanent" open='true'
+            sx={{
+                width: '240px'
+            }}
+        >
             <Toolbar
                 sx={{
                     display: 'flex',
@@ -15,12 +20,28 @@ export default function Sidebar({open, toggleDrawer}) {
                     px: [1],
                 }}
             >
-                <IconButton onClick={toggleDrawer}>
-                    <ChevronLeftIcon />
-                </IconButton>
+            <Typography 
+                    component="h1" 
+                    variant="h5" 
+                    color="inherit" 
+                    noWrap 
+                    sx={{ 
+                        flexGrow: 1,
+                        textAlign: 'center'
+                    }}>
+                Ixlas
+            </Typography>
             </Toolbar>
             <Divider />
-            <List component="nav">
+            <List component="nav" className="Sidebar"
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '100%',
+                }}
+            >
                 {mainListItems}
             </List>
         </Drawer>
