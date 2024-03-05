@@ -61,6 +61,43 @@ func (s *Server) createTranslator(c *gin.Context) {
 	c.JSON(200, translator)
 }
 
+type UpdateTranslatorRequest struct {
+	Name        string `json:"name"`
+	Surname     string `json:"surname"`
+	PhoneNumber string `json:"phone_number"`
+	Email       string `json:"email"`
+}
+
+func (s *Server) updateTranslator(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.ParseInt(idParam, 10, 64)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "id must be a valid number"})
+		return
+	}
+
+	var req UpdateTranslatorRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	args := db.UpdateTranslatorParams{
+		TranslatorID: id,
+		Name:         req.Name,
+		Surname:      req.Surname,
+		PhoneNumber:  req.PhoneNumber,
+		Email:        req.Email,
+	}
+
+	translator, err := s.query.UpdateTranslator(c, args)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(200, translator)
+}
+
 func (s *Server) deleteTranslator(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)

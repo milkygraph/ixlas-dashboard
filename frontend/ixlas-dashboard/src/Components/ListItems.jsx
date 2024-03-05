@@ -40,11 +40,14 @@ export const mainListItems = (
             </ListItemIcon>
             <ListItemText primary="Translators"/>
         </Button>
-        <Button>
+        <Button
+            component={Link}
+            to="/notaries"
+        >
             <ListItemIcon>
                 <PeopleIcon />
             </ListItemIcon>
-            <ListItemText primary="Customers" />
+            <ListItemText primary="Notaries" />
         </Button>
         <Button>
             <ListItemIcon>

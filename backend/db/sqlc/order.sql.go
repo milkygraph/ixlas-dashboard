@@ -176,6 +176,17 @@ func (q *Queries) GetOrders(ctx context.Context, arg GetOrdersParams) ([]Order, 
 	return items, nil
 }
 
+const getOrdersCount = `-- name: GetOrdersCount :one
+SELECT COUNT(*) FROM "order"
+`
+
+func (q *Queries) GetOrdersCount(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getOrdersCount)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const updateOrder = `-- name: UpdateOrder :one
 UPDATE "order" SET
     name = $1,

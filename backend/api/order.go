@@ -10,9 +10,18 @@ import (
 )
 
 func (s *Server) getOrders(c *gin.Context) {
+	pageParam := c.Param("page")
+	page, err := strconv.ParseInt(pageParam, 10, 64)
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("pageParam: ", pageParam)
+		c.JSON(400, gin.H{"error": "page must be a valid number"})
+		return
+	}
+
 	args := db.GetOrdersParams{
 		Limit:  10,
-		Offset: 0,
+		Offset: 10 * (int32(page) - 1),
 	}
 	orders, err := s.query.GetOrders(c, args)
 	if err != nil {
@@ -161,4 +170,13 @@ func (s *Server) deleteOrder(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{"status": "ok"})
+}
+
+func (s *Server) getOrdersCount(c *gin.Context) {
+	count, err := s.query.GetOrdersCount(c)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(200, count)
 }

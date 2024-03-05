@@ -45,3 +45,6 @@ WHERE order_id = $15 RETURNING *;
 
 -- name: DeleteOrder :exec
 DELETE FROM "order" WHERE order_id = $1;
+
+-- name: GetOrdersCount :one
+SELECT COUNT(*) FROM "order";

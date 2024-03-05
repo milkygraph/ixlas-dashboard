@@ -45,22 +45,25 @@ func (s *Server) setupRouter() {
 	router.GET("/translators", s.getTranslators)
 	router.GET("/translator/:id", s.getTranslator)
 	router.POST("/translator", s.createTranslator)
+	router.PUT("/translator/:id", s.updateTranslator)
 	router.DELETE("/translator/:id", s.deleteTranslator)
 
-	router.GET("/status", s.getStatuses)
+	router.GET("/statuses", s.getStatuses)
 	router.GET("/status/:id", s.getStatus)
 	router.POST("/status", s.createStatus)
 
-	router.GET("/notary", s.getNotaries)
+	router.GET("/notaries", s.getNotaries)
 	router.GET("/notary/:id", s.getNotary)
 	router.POST("/notary", s.createNotary)
+	router.PUT("/notary/:id", s.updateNotary)
 	router.DELETE("/notary/:id", s.deleteNotary)
 
-	router.GET("/order", s.getOrders)
+	router.GET("/orders/:page", s.getOrders)
 	router.GET("/order/:id", s.getOrder)
 	router.PUT("/order/:id", s.updateOrder)
 	router.POST("/order", s.createOrder)
 	router.DELETE("/order/:id", s.deleteOrder)
+	router.GET("/orders/count", s.getOrdersCount)
 
 	router.GET("/languages", s.getLanguages)
 

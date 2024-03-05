@@ -12,10 +12,10 @@ import { TableHead, TableBody, Button, TextField, InputAdornment } from '@mui/ma
 import EditIcon from '@mui/icons-material/Edit';
 import { Modal } from '@mui/base';
 
-export default function Translators() {
+export default function Notaries() {
     const context = React.useContext(Context);
-    const translators  = context.translators
-    const setTranslators = context.setTranslators;
+    const notaries  = context.notaries
+    const setNotaries = context.setNotaries;
     const [open, setOpen] = React.useState(false);
 
     function handleModal() {
@@ -26,20 +26,17 @@ export default function Translators() {
         e.preventDefault();
 
         const name = e.target.name.value;
-        const surname = e.target.surname.value;
-        const email = e.target.email.value;
-        const phone_number = e.target.phone.value;
 
-        fetch('http://localhost:8080/translator', {
+        fetch('http://localhost:8080/notary', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({name, surname, email, phone_number}),
+            body: JSON.stringify({name}),
         })
             .then((res) => res.json())
             .then((json) => {
-                setTranslators([...translators, json]);
+                setNotaries([...notaries, json]);
                 setOpen(false);
             })
             .catch((error) => {
@@ -48,23 +45,23 @@ export default function Translators() {
     }
 
     function onChange(id, field, value) {
-        let translator = translators.find((translator) => translator.translator_id === id);
-        console.log(translator)
-        translator[field] = value;
-        console.log(translator)
+        let notary = notaries.find((notary) => notary.notary_id === id);
+        console.log(notary)
+        notary[field] = value;
+        console.log(notary)
 
-        fetch(`http://localhost:8080/translator/${id}`, {
+        fetch(`http://localhost:8080/notary/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(translator),   
+            body: JSON.stringify(notary),   
         })
             .then((res) => res.json())
             .then((json) => {
-                console.log(json);
-                translators[translators.findIndex((translator) => translator.translator_id === id)] = json;
-                setTranslators([...translators]);
+                console.log('Success:', json)
+                notaries[notaries.findIndex((notary) => notary.translator_id === id)] = json;
+                setNotaries([...notaries]);
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -88,26 +85,11 @@ export default function Translators() {
         <React.Fragment>
             <Modal open={open} onClose={handleModal} sx={modalStyle}>
                 <Box sx={modalStyle}>
-                    <Title>New Translator</Title>
+                    <Title>New Notary</Title>
                     <form onSubmit={onSubmit}>
                         <TextField
                             id="name"
                             label="Name"
-                            sx={{ width: '100%', mb: 2 }}
-                        />
-                        <TextField
-                            id="surname"
-                            label="Surname"
-                            sx={{ width: '100%', mb: 2 }}
-                        />
-                        <TextField
-                            id="email"
-                            label="Email"
-                            sx={{ width: '100%', mb: 2 }}
-                        />
-                        <TextField
-                            id="phone"
-                            label="Phone"
                             sx={{ width: '100%', mb: 2 }}
                         />
                         <Button
@@ -116,7 +98,7 @@ export default function Translators() {
                             color="primary"
                             sx={{ width: '100%', mb: 2 }}
                         >
-                            Add
+                            Add Notary
                         </Button>
                     </form>
                 </Box>
@@ -142,7 +124,7 @@ export default function Translators() {
                             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <Title>Translators</Title>
                                 <Button color="primary" onClick={handleModal}>
-                                    Add Translator
+                                    Add Notary
                                 </Button>
                             </Box>
                             <TableHead>
@@ -154,39 +136,18 @@ export default function Translators() {
                                     }}>
                                     <TableCell>ID</TableCell>
                                     <TableCell>Name</TableCell>
-                                    <TableCell>Surname</TableCell>
-                                    <TableCell>Email</TableCell>
-                                    <TableCell>Phone</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {translators.map((translator) => {
+                                {notaries.map((notary) => {
                                     return (
-                                        <TableRow key={translator.translator_id}>
-                                            <TableCell>{translator.translator_id}</TableCell>
-                                            <TranslatorCell 
-                                                id={'name'}
-                                                value={translator.name} 
+                                        <TableRow key={notary.notary_id}>
+                                            <TableCell>{notary.notary_id}</TableCell>
+                                            <NotariesCell 
+                                                id={'notary_name'}
+                                                value={notary.notary_name} 
                                                 onChange={(e) => {
-                                                    onChange(translator.translator_id, 'name', e.target.value)
-                                                }}/>
-                                            <TranslatorCell 
-                                                id={'surname'}
-                                                value={translator.surname} 
-                                                onChange={(e) => {
-                                                    onChange(translator.translator_id, 'surname', e.target.value)
-                                                }}/>
-                                            <TranslatorCell
-                                                id={'email'}
-                                                value={translator.email} 
-                                                onChange={(e) => {
-                                                    onChange(translator.translator_id, 'email', e.target.value)
-                                                }}/>
-                                            <TranslatorCell
-                                                id={'phone_number'}
-                                                value={translator.phone_number} 
-                                                onChange={(e) => {
-                                                    onChange(translator.translator_id, 'phone', e.target.value)
+                                                    onChange(notary.notary_id, 'notary_name', e.target.value)
                                                 }}/>
                                         </TableRow>
                                     );
@@ -200,7 +161,7 @@ export default function Translators() {
     );
 }
 
-function TranslatorCell({id, value, onChange}) {
+function NotariesCell({id, value, onChange}) {
     const [disabled, setDisabled] = React.useState(true);
     const [hovering, setHovering] = React.useState(false);
     const [field, setField] = React.useState(value);

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {useEffect} from 'react';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
@@ -11,18 +10,7 @@ import Orders from './Orders';
 import Copyright from './Copyright';
 
 export default function Dashboard() {
-    const [orders, setOrders] = React.useState([]);
-
-    useEffect(() => {
-        fetch('http://localhost:8080/order')
-            .then((res) => res.json())
-            .then((json) => {
-                console.log(json)
-                setOrders(json)
-            });
-    }, []);
-
-    return (
+   return (
         <Box
             component="main"
             sx={{
@@ -36,7 +24,7 @@ export default function Dashboard() {
             }}
         >
             <Toolbar />
-            <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+            <Container maxWidth="90%" sx={{ mt: 4, mb: 4 }}>
                 <Grid container spacing={3} >
                     {/* Chart */}
                     <Grid item xs={12} md={8} lg={9}>
@@ -76,7 +64,7 @@ export default function Dashboard() {
                                 flexDirection: 'column' ,
                                 borderRadius: '10px' 
                             }}>
-                            <Orders orders={orders} />
+                            <Orders />
                         </Paper>
                     </Grid>
                 </Grid>

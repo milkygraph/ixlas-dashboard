@@ -1,6 +1,7 @@
 package api
 
 import (
+	db "ixlas-dashboard/db/sqlc"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -42,6 +43,35 @@ func (s *Server) createNotary(c *gin.Context) {
 		return
 	}
 	notary, err := s.query.CreateNotary(c, req.Name)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(200, notary)
+}
+
+type UpdateNotaryRequest struct {
+	Name string `json:"notary_name"`
+}
+
+func (s *Server) updateNotary(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.ParseInt(idParam, 10, 32)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "id must be a number"})
+		return
+	}
+
+	var req UpdateNotaryRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	notary, err := s.query.UpdateNotary(c, db.UpdateNotaryParams{
+		NotaryID:   int32(id),
+		NotaryName: req.Name,
+	})
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
