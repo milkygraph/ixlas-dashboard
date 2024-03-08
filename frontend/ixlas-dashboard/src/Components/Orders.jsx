@@ -24,6 +24,7 @@ const types = {
     translator: 'translator',
 };
 
+// TODO: Add multiple entry support for multiple files in an order
 export default function Orders() {
     const [modalOpen, setModalOpen] = React.useState(false);
     const context = React.useContext(Context);
@@ -117,6 +118,7 @@ export default function Orders() {
                             <TextField id="name" required label="Name" variant="outlined" fullWidth margin="normal" />
                             <TextField id="surname" required label="Surname" variant="outlined" fullWidth margin="normal" />
                             <TextField id="phone" required label="Phone" variant="outlined" fullWidth margin="normal" />
+                            <TextField id="details" required label="Details" variant="outlined" fullWidth margin="normal" />
                         </Box>
 
                         <Box sx={{display: 'flex', flexDirection: 'row', gap: '10px', width: '100%'}}>
@@ -255,7 +257,9 @@ function OrderRow ({row}) {
 
     return (
         <TableRow key={order.order_id}>
-            <TableCell>{new Date(order.issued_date).toLocaleDateString('us-US', dateOptions)}</TableCell>
+            <TableCell><p>{new Date(order.issued_date).toLocaleDateString('us-US', dateOptions) + '\n'
+                + order.details
+                }</p></TableCell>
             <OrderCell id={"name"}
                 value={order.name} 
                 func={handleEdit}
@@ -348,11 +352,6 @@ function OrderCell({id, value, func, type}) {
         }
     }
 
-    // function handleEnter(e) {
-    //     console.log(e);
-    //     func(id, field, type);
-    // }
-
     function handleEditIcon() {
         setDisabled(false);
     }
@@ -370,7 +369,7 @@ function OrderCell({id, value, func, type}) {
                 if (e.target.value.match(/[^0-9]/)) {
                     return;
                 }
-                setField(newValue);
+                setField(e.target.value);
                 break;
             case types.notary:
                 setField(newValue.id);
@@ -407,7 +406,7 @@ function OrderCell({id, value, func, type}) {
                     focused={!disabled}
                     onMouseEnter={() => setHovering(true)}
                     onMouseLeave={() => setHovering(false)}
-                    onChange={(e) => setField(e.target.value)}
+                    onChange={(e) => { setField(e.target.value); }}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter') {
                             onChange(e, e.target.value);

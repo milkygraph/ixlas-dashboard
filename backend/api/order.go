@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	db "ixlas-dashboard/db/sqlc"
 	"strconv"
 	"time"
@@ -9,12 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// TODO: Add multiple entry support for multiple files in an order
 func (s *Server) getOrders(c *gin.Context) {
 	pageParam := c.Param("page")
 	page, err := strconv.ParseInt(pageParam, 10, 64)
 	if err != nil {
-		fmt.Println(err)
-		fmt.Println("pageParam: ", pageParam)
 		c.JSON(400, gin.H{"error": "page must be a valid number"})
 		return
 	}
@@ -25,7 +23,7 @@ func (s *Server) getOrders(c *gin.Context) {
 	}
 	orders, err := s.query.GetOrders(c, args)
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(500, apiError(err))
 		return
 	}
 	c.JSON(200, orders)
@@ -41,7 +39,7 @@ func (s *Server) getOrder(c *gin.Context) {
 
 	order, err := s.query.GetOrder(c, id)
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(500, apiError(err))
 		return
 	}
 	c.JSON(200, order)
@@ -66,7 +64,7 @@ type CreateOrderRequest struct {
 func (s *Server) createOrder(c *gin.Context) {
 	var req CreateOrderRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(400, apiError(err))
 		return
 	}
 
@@ -88,11 +86,9 @@ func (s *Server) createOrder(c *gin.Context) {
 		Details:       req.Details,
 	}
 
-	fmt.Println(args.IssuedDate)
-
 	order, err := s.query.CreateOrder(c, args)
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(500, apiError(err))
 		return
 	}
 	c.JSON(200, order)
@@ -119,7 +115,7 @@ type UpdateOrderRequest struct {
 func (s *Server) updateOrder(c *gin.Context) {
 	var req UpdateOrderRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(400, apiError(err))
 		return
 	}
 
@@ -149,7 +145,7 @@ func (s *Server) updateOrder(c *gin.Context) {
 
 	order, err := s.query.UpdateOrder(c, args)
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(500, apiError(err))
 		return
 	}
 	c.JSON(200, order)
@@ -165,7 +161,7 @@ func (s *Server) deleteOrder(c *gin.Context) {
 
 	err = s.query.DeleteOrder(c, id)
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(500, apiError(err))
 		return
 	}
 
@@ -175,7 +171,7 @@ func (s *Server) deleteOrder(c *gin.Context) {
 func (s *Server) getOrdersCount(c *gin.Context) {
 	count, err := s.query.GetOrdersCount(c)
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(500, apiError(err))
 		return
 	}
 	c.JSON(200, count)

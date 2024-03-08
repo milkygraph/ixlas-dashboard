@@ -8,6 +8,14 @@ import (
 	"time"
 )
 
+type Account struct {
+	ID        int32     `json:"id"`
+	Username  string    `json:"username"`
+	Email     string    `json:"email"`
+	Password  string    `json:"password"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
 type Notary struct {
 	NotaryID   int32  `json:"notary_id"`
 	NotaryName string `json:"notary_name"`
@@ -35,6 +43,14 @@ type Order struct {
 type Status struct {
 	StatusID   int32  `json:"status_id"`
 	StatusName string `json:"status_name"`
+}
+
+type Token struct {
+	ID        int32     `json:"id"`
+	Token     string    `json:"token"`
+	AccountID int32     `json:"account_id"`
+	CreatedAt time.Time `json:"created_at"`
+	ExpiresAt time.Time `json:"expires_at"`
 }
 
 type Translator struct {

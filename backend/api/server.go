@@ -42,6 +42,9 @@ func (s *Server) setupRouter() {
 		c.Next()
 	})
 
+	router.POST("/login", s.loginAccount)
+	router.POST("/account", s.createAccount)
+
 	router.GET("/translators", s.getTranslators)
 	router.GET("/translator/:id", s.getTranslator)
 	router.POST("/translator", s.createTranslator)

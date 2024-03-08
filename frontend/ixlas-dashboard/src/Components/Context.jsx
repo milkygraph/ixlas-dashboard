@@ -7,40 +7,36 @@ const Provider = ({ children }) => {
     const [statuses, setStatuses] = React.useState([]);
     const [languages, setLanguages] = React.useState([]);
     const [translators, setTranslators] = React.useState([]);
+    const [loggedIn, setLoggedIn] = React.useState(false);
 
     React.useEffect(() => {
         fetch("http://localhost:8080/notaries")
             .then((res) => res.json())
             .then((json) => {
-                console.log(json);
                 setNotaries(json);
             });
 
         fetch("http://localhost:8080/statuses")
             .then((res) => res.json())
             .then((json) => {
-                console.log(json);
                 setStatuses(json);
             });
 
-        console.log("fetching languages");
         fetch("http://localhost:8080/languages")
             .then((res) => res.json())
             .then((json) => {
-                console.log(json);
                 setLanguages(json);
             });
         fetch("http://localhost:8080/translators")
             .then((res) => res.json())
             .then((json) => {
-                console.log(json);
                 setTranslators(json);
             });
     }, []);
-    
+
     return (
-        <Context.Provider value={{ languages, notaries, statuses, translators,
-                                setLanguages, setNotaries, setStatuses, setTranslators }}>
+        <Context.Provider value={{ languages, notaries, statuses, translators, loggedIn,
+                                setLanguages, setNotaries, setStatuses, setTranslators, setLoggedIn }}>
             {children}
         </Context.Provider>
     );
