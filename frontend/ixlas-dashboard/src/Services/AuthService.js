@@ -3,23 +3,18 @@ import axios from 'axios';
 const backend_root = 'http://localhost:8080';
 
 class AuthService {
-    async login(username, password) {
+    async login(username, password, setLoggedIn) {
         try {
             const response = await axios.post(backend_root + '/login', {
                 username,
                 password
             });
 
-            if (response.data.token) {
-                localStorage.setItem('user', JSON.stringify(response.data));
-            }
-
+            localStorage.setItem('user', JSON.stringify(response.data));
+            setLoggedIn(true);
             return response.data;
         } catch (error) {
-            // Handle specific error scenarios or log the error
             console.error('Login failed:', error);
-
-            // Re-throw the error to propagate it to the calling code
             throw error;
         }
     }
@@ -28,20 +23,32 @@ class AuthService {
         return new AuthService();
     }
 
-    logout() {
+    logout(setLoggedIn) {
         localStorage.removeItem('user');
+        setLoggedIn(false);
     }
 
-    register(username, email, password) {
-        return axios.post('/api/auth/register', {
-            username,
-            email,
-            password
-        });
+    async register(username, email, password) {
+        try {
+            const response = await axios.post(backend_root + '/signup', {
+                username,
+                email,
+                password
+            });
+
+            return response.data;
+        } catch (error) {
+            console.error('Registration failed:', error);
+            throw error;
+        }
     }
 
     getCurrentUser() {
         return JSON.parse(localStorage.getItem('user'));
+    }
+
+    getAcessToken() {
+        return `Bearer ${this.getCurrentUser().access_token}`
     }
 }
 

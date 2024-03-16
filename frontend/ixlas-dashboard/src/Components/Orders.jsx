@@ -12,6 +12,7 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box';
 import {Context} from './Context';
+import AuthService from '../Services/AuthService';
 
 const types = {
     money: 'money',
@@ -24,7 +25,6 @@ const types = {
     translator: 'translator',
 };
 
-// TODO: Add multiple entry support for multiple files in an order
 export default function Orders() {
     const [modalOpen, setModalOpen] = React.useState(false);
     const context = React.useContext(Context);
@@ -35,18 +35,28 @@ export default function Orders() {
     const [numOrders, setNumOrders] = React.useState(0);
 
     React.useEffect(() => {
-        fetch(`http://localhost:8080/orders/1`)
+        fetch(`http://localhost:8080/orders/1`, {
+            headers: {
+                'Authorization': `Bearer ${AuthService.getCurrentUser().access_token}`,
+            }})
             .then((response) => response.json())
             .then((data) => {
                 setOrders(data);
-            });
+            }).catch((error) => {
+                if (error.response.status === 401) {
+                    AuthService.logout(context.setLoggedIn);
+                }
+            })
 
-        fetch('http://localhost:8080/orders/count')
+        fetch('http://localhost:8080/orders/count', {
+            headers: {
+                'Authorization': `Bearer ${AuthService.getCurrentUser().access_token}`,
+            }})
             .then((response) => response.json())
             .then((data) => {
                 setNumOrders(Math.ceil(data / 10));
             });
-    }, []);
+    }, [context.setLoggedIn]);
 
     function handleModalToggle() {
         setModalOpen(!modalOpen);
@@ -78,6 +88,7 @@ export default function Orders() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': AuthService.getAcessToken(),
             },
             body: JSON.stringify(newOrder)}).then((response) => response.json())
             .then((data) => {
@@ -210,11 +221,14 @@ export default function Orders() {
                 }}>
                 {Array.from({length: numOrders}, (_, i) => i + 1).map((num) => (
                     <Button key={num} onClick={() => {
-                        fetch(`http://localhost:8080/orders/${num}`)
-                            .then((response) => response.json())
-                            .then((data) => {
-                                setOrders(data);
-                            });
+                            fetch(`http://localhost:8080/orders/${num}`, {
+                                headers: {
+                                    'Authorization': AuthService.getAcessToken(),
+                                }})
+                                .then((response) => response.json())
+                                .then((data) => {
+                                    setOrders(data);
+                                });
                     }}>{num}</Button>
                 ))}
                 </Box>
@@ -250,6 +264,7 @@ function OrderRow ({row}) {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': AuthService.getAcessToken(),
             },
             body: JSON.stringify(updatedOrder),
         })

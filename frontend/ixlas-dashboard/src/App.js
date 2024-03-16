@@ -1,7 +1,7 @@
 import './App.css';
 import React from "react";
 import {Routes, Route, BrowserRouter} from "react-router-dom";
-import {CssBaseline, Box } from "@mui/material";
+import {CssBaseline, Box, Container } from "@mui/material";
 import { ThemeProvider } from '@mui/material/styles';
 import Dashboard from "./Components/Dashboard";
 import Translators from './Components/Translators';
@@ -25,6 +25,8 @@ function App() {
 
 function Router() {
     const [open, setOpen] = React.useState(true);
+    const [loading, setLoading] = React.useState(true);
+
     const toggleDrawer = () => {
         setOpen(!open);
     };
@@ -32,8 +34,22 @@ function Router() {
     const context = React.useContext(Context);
     const loggedIn = context.loggedIn;
 
-    if (!loggedIn) {
+    React.useEffect(() => {
+        setLoading(false);
+    }, []);
+
+    if (loading) {
         return (
+            <Container>
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontSize: '2rem'}}>
+                    <h1>Loading...</h1>
+                </Box>
+            </Container>
+        );
+    }
+
+    return (
+        (loggedIn === false) ? (
             <BrowserRouter>
                 <ThemeProvider theme={defaultTheme}>
                     <Box sx={{ display: 'flex' }}>
@@ -45,24 +61,22 @@ function Router() {
                     </Box>
                 </ThemeProvider>
             </BrowserRouter>
-        );
-    }
-
-    return (
-        <BrowserRouter>
-            <ThemeProvider theme={defaultTheme}>
-                <Box sx={{ display: 'flex' }}>
-                    <CssBaseline />
-                    <TopBar open={open} toggleDrawer={toggleDrawer}/>
-                    <Sidebar open={open} toggleDrawer={toggleDrawer}/>
-                    <Routes>
-                        <Route path="/" element={<Dashboard />}/>
-                        <Route path="/translators" element={<Translators/>}/>
-                        <Route path="/notaries" element={<Notaries/>}/>
-                    </Routes>
-                </Box>
-            </ThemeProvider>
-        </BrowserRouter>
+        ) : (
+                <BrowserRouter>
+                    <ThemeProvider theme={defaultTheme}>
+                        <Box sx={{ display: 'flex' }}>
+                            <CssBaseline />
+                            <TopBar open={open} toggleDrawer={toggleDrawer}/>
+                            <Sidebar open={open} toggleDrawer={toggleDrawer}/>
+                            <Routes>
+                                <Route path="/" element={<Dashboard />}/>
+                                <Route path="/translators" element={<Translators/>}/>
+                                <Route path="/notaries" element={<Notaries/>}/>
+                            </Routes>
+                        </Box>
+                    </ThemeProvider>
+                </BrowserRouter>
+            )
     );
 }
 

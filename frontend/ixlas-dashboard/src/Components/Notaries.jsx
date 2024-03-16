@@ -11,6 +11,7 @@ import {Context} from './Context';
 import { TableHead, TableBody, Button, TextField, InputAdornment } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { Modal } from '@mui/base';
+import AuthService from '../Services/AuthService';
 
 export default function Notaries() {
     const context = React.useContext(Context);
@@ -31,6 +32,7 @@ export default function Notaries() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': AuthService.getAcessToken(),
             },
             body: JSON.stringify({name}),
         })
@@ -54,6 +56,7 @@ export default function Notaries() {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': AuthService.getAcessToken(),
             },
             body: JSON.stringify(notary),   
         })

@@ -3,6 +3,9 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import MuiAppBar from '@mui/material/AppBar';
 import { styled } from '@mui/material/styles';
+import LogoutIcon from '@mui/icons-material/Logout';
+import Button from '@mui/material/Button';
+import { Context } from './Context';
 
 const drawerWidth = 240;
 
@@ -25,6 +28,8 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 export default function TopBar() {
+    const setLoggedIn = React.useContext(Context).setLoggedIn;
+
     return (
         <AppBar position="absolute" open={true}>
             <Toolbar
@@ -41,6 +46,15 @@ export default function TopBar() {
                 >
                     Dashboard
                 </Typography>
+                <Button
+                    color="inherit"
+                    onClick={() => {
+                        setLoggedIn(false);
+                        localStorage.removeItem("user");
+                    }}
+                >
+                    <LogoutIcon />
+                </Button>   
             </Toolbar>
         </AppBar>
     );

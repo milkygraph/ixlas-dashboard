@@ -11,6 +11,7 @@ import {Context} from './Context';
 import { TableHead, TableBody, Button, TextField, InputAdornment } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { Modal } from '@mui/base';
+import AuthService from '../Services/AuthService';
 
 export default function Translators() {
     const context = React.useContext(Context);
@@ -34,6 +35,7 @@ export default function Translators() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': AuthService.getAcessToken(),
             },
             body: JSON.stringify({name, surname, email, phone_number}),
         })
@@ -57,6 +59,7 @@ export default function Translators() {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': AuthService.getAcessToken(),
             },
             body: JSON.stringify(translator),   
         })

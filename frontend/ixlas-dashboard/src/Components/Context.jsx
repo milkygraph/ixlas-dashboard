@@ -1,4 +1,5 @@
 import React from "react";
+import AuthService from "../Services/AuthService";
 
 const Context = React.createContext();
 
@@ -10,29 +11,54 @@ const Provider = ({ children }) => {
     const [loggedIn, setLoggedIn] = React.useState(false);
 
     React.useEffect(() => {
-        fetch("http://localhost:8080/notaries")
+        if(localStorage.getItem("user")) {
+            setLoggedIn(true);
+            return
+        }
+        setLoggedIn(false);
+    }, [loggedIn]);
+
+    function logout(err) {
+        if (err.response.status === 401) {
+            AuthService.logout(setLoggedIn);
+        }
+    }
+
+    React.useEffect(() => {
+        if (!loggedIn) {
+            return;
+        }
+
+        const requestOptions = {
+            headers: {
+                'Authorization': `Bearer ${AuthService.getCurrentUser().access_token}`,
+            }
+        };
+
+        fetch("http://localhost:8080/notaries", requestOptions)
             .then((res) => res.json())
             .then((json) => {
                 setNotaries(json);
-            });
+            }).catch(logout);
 
-        fetch("http://localhost:8080/statuses")
+        fetch("http://localhost:8080/statuses", requestOptions)
             .then((res) => res.json())
             .then((json) => {
                 setStatuses(json);
-            });
+            }).catch(logout);
 
-        fetch("http://localhost:8080/languages")
+        fetch("http://localhost:8080/languages", requestOptions)
             .then((res) => res.json())
             .then((json) => {
                 setLanguages(json);
-            });
-        fetch("http://localhost:8080/translators")
+            }).catch(logout);
+
+        fetch("http://localhost:8080/translators", requestOptions)
             .then((res) => res.json())
             .then((json) => {
                 setTranslators(json);
-            });
-    }, []);
+            }).catch(logout);
+    }, [loggedIn]);
 
     return (
         <Context.Provider value={{ languages, notaries, statuses, translators, loggedIn,

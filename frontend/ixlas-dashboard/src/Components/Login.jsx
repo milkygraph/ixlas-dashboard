@@ -21,13 +21,9 @@ export default function Login() {
         const username = data.get('username');
         const password = data.get('password');
 
-        AuthService.login(username, password)
-            .then(response => {
-                console.log(response);
-                setLoggedIn(true);
-            })
+        AuthService.login(username, password, setLoggedIn)
             .catch(error => {
-                alert('Invalid username or password');
+                alert('Invalid username or password' + error);
             });
     }
     
