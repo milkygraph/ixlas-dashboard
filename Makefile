@@ -21,7 +21,7 @@ migrateup:
 	migrate -path ./backend/db/migration -database "postgresql://root:ixlas@localhost:5432/ixlas?sslmode=disable" -verbose up
 
 migratedown:
-	migrate -path ./backend/db/migration -database "postgresql://root:ixlas@localhost:5432/ixlas?sslmode=disable" -verbose down
+	migrate -path ./backend/db/migration -database "postgresql://root:ixlas@localhost:5432/ixlas?sslmode=disable" -verbose down 1
 
 sqlc:
 	cd backend && sqlc generate
@@ -30,7 +30,7 @@ test:
 	go test -v -cover ./...
 
 server:
-	cd backend && go run main.go
+	cd backend/ && air .
 
 frontend:
 	cd ./frontend/ixlas-dashboard/ && npm start

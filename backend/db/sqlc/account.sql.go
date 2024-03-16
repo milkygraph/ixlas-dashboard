@@ -48,26 +48,19 @@ func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (C
 }
 
 const getAccount = `-- name: GetAccount :one
-SELECT id, username, password, email, created_at FROM accounts WHERE username = $1 LIMIT 1
+SELECT id, username, email, password, created_at, privilege_level_id FROM accounts WHERE username = $1 LIMIT 1
 `
 
-type GetAccountRow struct {
-	ID        int32     `json:"id"`
-	Username  string    `json:"username"`
-	Password  string    `json:"password"`
-	Email     string    `json:"email"`
-	CreatedAt time.Time `json:"created_at"`
-}
-
-func (q *Queries) GetAccount(ctx context.Context, username string) (GetAccountRow, error) {
+func (q *Queries) GetAccount(ctx context.Context, username string) (Account, error) {
 	row := q.db.QueryRowContext(ctx, getAccount, username)
-	var i GetAccountRow
+	var i Account
 	err := row.Scan(
 		&i.ID,
 		&i.Username,
-		&i.Password,
 		&i.Email,
+		&i.Password,
 		&i.CreatedAt,
+		&i.PrivilegeLevelID,
 	)
 	return i, err
 }

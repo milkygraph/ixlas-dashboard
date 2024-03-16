@@ -10,4 +10,4 @@ INSERT INTO accounts (
 ) RETURNING id, username, email, created_at;
 
 -- name: GetAccount :one
-SELECT id, username, password, email, created_at FROM accounts WHERE username = $1 LIMIT 1;
+SELECT * FROM accounts WHERE username = $1 LIMIT 1;

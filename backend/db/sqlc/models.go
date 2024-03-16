@@ -5,15 +5,19 @@
 package db
 
 import (
+	"database/sql"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Account struct {
-	ID        int32     `json:"id"`
-	Username  string    `json:"username"`
-	Email     string    `json:"email"`
-	Password  string    `json:"password"`
-	CreatedAt time.Time `json:"created_at"`
+	ID               int32         `json:"id"`
+	Username         string        `json:"username"`
+	Email            string        `json:"email"`
+	Password         string        `json:"password"`
+	CreatedAt        time.Time     `json:"created_at"`
+	PrivilegeLevelID sql.NullInt32 `json:"privilege_level_id"`
 }
 
 type Notary struct {
@@ -40,17 +44,26 @@ type Order struct {
 	Details       string    `json:"details"`
 }
 
+type PrivilegeLevel struct {
+	ID        int32     `json:"id"`
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type Session struct {
+	ID           uuid.UUID `json:"id"`
+	Username     string    `json:"username"`
+	RefreshToken string    `json:"refresh_token"`
+	UserAgent    string    `json:"user_agent"`
+	IpAddress    string    `json:"ip_address"`
+	IsBlocked    bool      `json:"is_blocked"`
+	ExpiresAt    time.Time `json:"expires_at"`
+	CreatedAt    time.Time `json:"created_at"`
+}
+
 type Status struct {
 	StatusID   int32  `json:"status_id"`
 	StatusName string `json:"status_name"`
-}
-
-type Token struct {
-	ID        int32     `json:"id"`
-	Token     string    `json:"token"`
-	AccountID int32     `json:"account_id"`
-	CreatedAt time.Time `json:"created_at"`
-	ExpiresAt time.Time `json:"expires_at"`
 }
 
 type Translator struct {

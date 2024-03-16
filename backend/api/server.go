@@ -2,13 +2,15 @@ package api
 
 import (
 	db "ixlas-dashboard/db/sqlc"
+	"ixlas-dashboard/token"
 
 	"github.com/gin-gonic/gin"
 )
 
 type Server struct {
-	query  *db.Queries
-	router *gin.Engine
+	query      *db.Queries
+	router     *gin.Engine
+	tokenMaker token.JWTMaker
 }
 
 func NewServer(q *db.Queries) *Server {
@@ -43,32 +45,34 @@ func (s *Server) setupRouter() {
 	})
 
 	router.POST("/login", s.loginAccount)
-	router.POST("/account", s.createAccount)
+	router.POST("/signup", s.createAccount)
 
-	router.GET("/translators", s.getTranslators)
-	router.GET("/translator/:id", s.getTranslator)
-	router.POST("/translator", s.createTranslator)
-	router.PUT("/translator/:id", s.updateTranslator)
-	router.DELETE("/translator/:id", s.deleteTranslator)
+	authRoutes := router.Group("/").Use(authMiddleware(s.tokenMaker))
 
-	router.GET("/statuses", s.getStatuses)
-	router.GET("/status/:id", s.getStatus)
-	router.POST("/status", s.createStatus)
+	authRoutes.GET("/translators", s.getTranslators)
+	authRoutes.GET("/translator/:id", s.getTranslator)
+	authRoutes.POST("/translator", s.createTranslator)
+	authRoutes.PUT("/translator/:id", s.updateTranslator)
+	authRoutes.DELETE("/translator/:id", s.deleteTranslator)
 
-	router.GET("/notaries", s.getNotaries)
-	router.GET("/notary/:id", s.getNotary)
-	router.POST("/notary", s.createNotary)
-	router.PUT("/notary/:id", s.updateNotary)
-	router.DELETE("/notary/:id", s.deleteNotary)
+	authRoutes.GET("/statuses", s.getStatuses)
+	authRoutes.GET("/status/:id", s.getStatus)
+	authRoutes.POST("/status", s.createStatus)
 
-	router.GET("/orders/:page", s.getOrders)
-	router.GET("/order/:id", s.getOrder)
-	router.PUT("/order/:id", s.updateOrder)
-	router.POST("/order", s.createOrder)
-	router.DELETE("/order/:id", s.deleteOrder)
-	router.GET("/orders/count", s.getOrdersCount)
+	authRoutes.GET("/notaries", s.getNotaries)
+	authRoutes.GET("/notary/:id", s.getNotary)
+	authRoutes.POST("/notary", s.createNotary)
+	authRoutes.PUT("/notary/:id", s.updateNotary)
+	authRoutes.DELETE("/notary/:id", s.deleteNotary)
 
-	router.GET("/languages", s.getLanguages)
+	authRoutes.GET("/orders/:page", s.getOrders)
+	authRoutes.GET("/order/:id", s.getOrder)
+	authRoutes.PUT("/order/:id", s.updateOrder)
+	authRoutes.POST("/order", s.createOrder)
+	authRoutes.DELETE("/order/:id", s.deleteOrder)
+	authRoutes.GET("/orders/count", s.getOrdersCount)
+
+	authRoutes.GET("/languages", s.getLanguages)
 
 	s.router = router
 }
